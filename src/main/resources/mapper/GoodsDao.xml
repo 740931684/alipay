@@ -1,0 +1,15 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alipay.dao.GoodsDao">
+    <insert id="insertIntoGoods">
+        insert into goods(out_trade_no,total_amount,subject,body) values
+        (#{out_trade_no},#{total_amount},#{subject},#{body})
+    </insert>
+
+    <update id="updateGoods">
+        update goods
+        set trade_no = #{trade_no}
+        where out_trade_no = #{out_trade_no}
+    </update>
+</mapper>
