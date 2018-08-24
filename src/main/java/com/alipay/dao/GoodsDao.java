@@ -11,4 +11,7 @@ public interface GoodsDao {
 
 
     Goods selectInfo(@Param("outTradeNo") String outTradeNo);
+
+    int updateGoods(@Param("outTradeNo")String outTradeNo,
+                    @Param("status")String status);
 }

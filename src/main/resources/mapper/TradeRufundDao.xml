@@ -17,4 +17,9 @@
     <select id="getRefundInfo" resultType="TradeRefund">
         select * from trade_refund
     </select>
+
+    <select id="getRefundByOutTradeNo" resultType="TradeRefund">
+        select * from trade_refund
+        where out_trade_no = #{outTradeNo}
+    </select>
 </mapper>

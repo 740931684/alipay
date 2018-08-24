@@ -11,17 +11,8 @@ public class Goods {
     private String subject;
     //商品描述
     private String body;
-
-    @Override
-    public String toString() {
-        return "Goods{" +
-                "outTradeNo='" + outTradeNo + '\'' +
-                ", totalAmount='" + totalAmount + '\'' +
-                ", tradeNo='" + tradeNo + '\'' +
-                ", subject='" + subject + '\'' +
-                ", body='" + body + '\'' +
-                '}';
-    }
+    //交易状态
+    private String status;
 
     public String getOutTradeNo() {
         return outTradeNo;
@@ -61,5 +52,13 @@ public class Goods {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

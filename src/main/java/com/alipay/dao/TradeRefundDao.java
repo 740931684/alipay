@@ -16,4 +16,6 @@ public interface TradeRefundDao {
 
 
     List<TradeRefund> getRefundInfo();
+
+    TradeRefund getRefundByOutTradeNo(@Param("outTradeNo")String outTradeNo);
 }

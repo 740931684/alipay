@@ -11,4 +11,10 @@
         select * from goods
         where out_trade_no = #{outTradeNo}
     </select>
+
+    <delete id="updateGoods">
+        update goods
+        set status = #{status}
+        where out_trade_no = #{outTradeNo}
+    </delete>
 </mapper>

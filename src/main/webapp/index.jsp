@@ -192,8 +192,10 @@ h2 {
 </style>
 </head>
 <body text=#000000 bgColor="#ffffff" leftMargin=0 topMargin=4>
-<div style="background-color: #000;width: 100%;height: auto">
-	<botton style="float: right;color: #fff" id="refund">退款申请</botton>
+<div style="width: 100%;height: auto">
+	<form action="/refundApply" method="get">
+		<input type="submit" value="退款申请">
+	</form>
 </div>
 	<header class="am-header">
 	<h1>支付宝电脑网站支付体验入口页</h1>
@@ -367,6 +369,8 @@ h2 {
 
 
 </body>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script language="javascript">
 	var tabs = document.getElementsByName('tab');
 	var contents = document.getElementsByName('divcontent');
@@ -405,13 +409,5 @@ h2 {
 	}
 	GetDateNow();
 
-	$('#refund').click(function () {
-		$.ajax({
-			url:"/refundApply",
-			type:"get",
-			data:{},
-			dataType:"json"
-		});
-    });
 </script>
 </html>
