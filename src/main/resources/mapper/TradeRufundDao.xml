@@ -1,0 +1,25 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alipay.dao.TradeRefundDao">
+    <insert id="addRefund">
+        insert into trade_refund(out_trade_no,trade_no,
+        refund_amount,refund_reason,out_request_no)
+        values (#{outTradeNo},#{tradeNo},#{refundAmount},
+        #{refundReason},#{outRequestNo})
+    </insert>
+
+    <delete id="deleteRefund">
+        delete from trade_refund
+        where out_trade_no = #{outTradeNo}
+    </delete>
+
+    <select id="getRefundInfo" resultType="TradeRefund">
+        select * from trade_refund
+    </select>
+
+    <select id="getRefundByOutTradeNo" resultType="TradeRefund">
+        select * from trade_refund
+        where out_trade_no = #{outTradeNo}
+    </select>
+</mapper>

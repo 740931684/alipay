@@ -20,7 +20,10 @@ public class GoodsDaoTest {
     @Test
     public void testGoods(){
       //  goodsDao.insertIntoGoods("1341654654","100","苹果","");
+<<<<<<< HEAD
        // goodsDao.updateGoods("1341654654","65486813");
+=======
+>>>>>>> de26ee6f7d3113b09e448f314378281e5611c83b
     }
 
 }

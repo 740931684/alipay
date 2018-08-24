@@ -1,48 +1,42 @@
 package com.alipay.entity;
 
 public class Goods {
-    //订单号
-    private String out_trade_no;
-    //付款金额
-    private String total_amount;
     //交易号
-    private String trade_no;
-    //订单名称
-    private String subject;
+    private String outTradeNo;
+    //付款金额
+    private String totalAmount;
+    //交易号
+    private String tradeNo;
     //商品描述
     private String body;
 
-    public String getOut_trade_no() {
-        return out_trade_no;
+    //交易状态
+    private String status;
+
+    public String getOutTradeNo() {
+        return outTradeNo;
     }
 
-    public void setOut_trade_no(String out_trade_no) {
-        this.out_trade_no = out_trade_no;
+    public void setOutTradeNo(String outTradeNo) {
+        this.outTradeNo = outTradeNo;
     }
 
-    public String getTrade_no() {
-        return trade_no;
+    public String getTotalAmount() {
+        return totalAmount;
     }
 
-    public void setTrade_no(String trade_no) {
-        this.trade_no = trade_no;
+    public void setTotalAmount(String totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
-    public String getTotal_amount() {
-        return total_amount;
+    public String getTradeNo() {
+        return tradeNo;
     }
 
-    public void setTotal_amount(String total_amount) {
-        this.total_amount = total_amount;
+    public void setTradeNo(String tradeNo) {
+        this.tradeNo = tradeNo;
     }
 
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
 
     public String getBody() {
         return body;
@@ -50,5 +44,13 @@ public class Goods {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
