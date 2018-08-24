@@ -71,7 +71,7 @@ public class AlipayController {
         //请求参数可查阅【电脑网站支付的API文档-alipay.trade.page.pay-请求参数】章节
 
         //请求
-        String result = alipayClient.pageExecute(alipayRequest).getBody();
+        String result = alipayClient.pageExecute(alipayRequest).getBody();//调用sdk生成表单
 
         //输出，注意输出格式，错误容易验签失败
         response.setContentType("text/html; charset=utf-8");
@@ -80,7 +80,7 @@ public class AlipayController {
         return null;
     }
 
-    @RequestMapping("return_url")
+    @RequestMapping("alipay/return_url")
     public String paySuccess(HttpServletRequest request,HttpServletResponse response) throws IOException, AlipayApiException {
         Map<String,String> params = new HashMap<String,String>();
         Map<String,String[]> requestParams = request.getParameterMap();
@@ -110,6 +110,8 @@ public class AlipayController {
 
             //付款金额
             String total_amount = new String(request.getParameter("total_amount").getBytes("ISO-8859-1"),"UTF-8");
+
+            goodsDao.insertIntoGoods(out_trade_no,total_amount,trade_no,"");
 
             response.setContentType("text/html; charset=utf-8");
             response.getWriter().println("trade_no:"+trade_no+"<br/>out_trade_no:"+out_trade_no+"<br/>total_amount:"+total_amount);
