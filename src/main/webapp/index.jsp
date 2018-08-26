@@ -280,7 +280,7 @@
         </div>
     </form>
     <form name=traderefundquery
-          action=alipay.trade.fastpay.refund.query method=post
+          action=trade.refund.query method=post
           target="_blank">
         <div id="body4" class="tab-content" name="divcontent">
             <dl class="content">

@@ -9,6 +9,7 @@ import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.config.AlipayConfig;
 import com.alipay.dao.GoodsDao;
+import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +37,6 @@ public class AlipayController {
     GoodsDao goodsDao;
     @Autowired
     TradeRefundDao refundDao;
-
 
     @RequestMapping(value = {"/","index"})
     public String showIndex(){
@@ -147,29 +148,37 @@ public class AlipayController {
         String trade_no = new String(request.getParameter("WIDTQtrade_no").getBytes("ISO-8859-1"), "UTF-8");
         //请二选一设置
 
-        Goods goods = goodsDao.selectInfo(out_trade_no);
+        Goods goods = new Goods();
+
+        if (!out_trade_no.isEmpty()) {
+            goods = goodsDao.selectInfo(out_trade_no);
+        }else if (!trade_no.isEmpty()){
+            goods = goodsDao.selectByTradeNo(trade_no);
+        }else {
+            goods = null;
+        }
+
+
         response.setContentType("text/html;charset=UTF-8");
         if (goods == null) {
-            response.getWriter().write("没有该订单号,请确认输入的订单号是否正确");
-        } else if (!goods.getTradeNo().equals(trade_no)) {
-            response.getWriter().write("没有该交易号,请确认输入的交易号是否正确");
+            response.getWriter().write("数据不存在，请检查订单号或者交易号");
         }else if (goods.getStatus()==null||goods.getStatus().equals("交易成功")){
             if (goods.getStatus()==null)goodsDao.updateGoods(out_trade_no,"交易成功");
             response.getWriter().write("交易成功<br>" +
-                    "订单号："+out_trade_no+"<br>"+
-                    "交易号："+trade_no);
+                    "订单号："+goods.getOutTradeNo()+"<br>"+
+                    "交易号："+goods.getTradeNo());
         }else if (goods.getStatus().equals("退款申请中")){
             response.getWriter().write("退款申请中<br>" +
-                    "订单号："+out_trade_no+"<br>"+
-                    "交易号："+trade_no);
+                    "订单号："+goods.getOutTradeNo()+"<br>"+
+                    "交易号："+goods.getTradeNo());
         } else if (goods.getStatus().equals("已退款")){
             response.getWriter().write("已退款<br>" +
-                    "订单号："+out_trade_no+"<br>"+
-                    "交易号："+trade_no);
+                    "订单号："+goods.getOutTradeNo()+"<br>"+
+                    "交易号："+goods.getTradeNo());
         }else if (goods.getStatus().equals("交易关闭")){
             response.getWriter().write("交易关闭<br>" +
-                    "订单号："+out_trade_no+"<br>"+
-                    "交易号："+trade_no);
+                    "订单号："+goods.getOutTradeNo()+"<br>"+
+                    "交易号："+goods.getTradeNo());
         }else {
             response.getWriter().write("系统异常");
         }
@@ -250,4 +259,40 @@ public class AlipayController {
         response.getWriter().write("取消退款申请成功");
     }
 
+
+    @RequestMapping(value = {"trade.refund.query"})
+    public String tradeRefundQuery(HttpServletRequest request,Model model) throws IOException {
+
+        String out_trade_no = new String(request.getParameter("WIDRQout_trade_no").getBytes("ISO-8859-1"),"UTF-8");
+        //支付宝交易号
+        String trade_no = new String(request.getParameter("WIDRQtrade_no").getBytes("ISO-8859-1"),"UTF-8");
+
+        //标识一次退款请求，同一笔交易多次退款需要保证唯一，如需部分退款，则此参数必传
+        String out_request_no = new String(request.getParameter("WIDRQout_request_no").getBytes("ISO-8859-1"),"UTF-8");
+
+        Goods goods = new Goods();
+
+        if (!out_trade_no.isEmpty()) {
+            goods = goodsDao.selectInfo(out_trade_no);
+        }else if (!trade_no.isEmpty()){
+            goods = goodsDao.selectByTradeNo(trade_no);
+        }else {
+            goods = null;
+        }
+
+
+        if (goods!=null && goods.getStatus().equals("已退款")){
+            model.addAttribute("goods",goods);
+        }else {
+            model.addAttribute("goods",new Goods());
+        }
+
+        return "trade.refund.query";
+    }
+
+
+    @RequestMapping("alipay.trade.close")
+    public String tradeClose(){
+        return "alipay.trade.close";
+    }
 }

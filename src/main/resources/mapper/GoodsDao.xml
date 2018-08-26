@@ -12,6 +12,12 @@
         where out_trade_no = #{outTradeNo}
     </select>
 
+
+    <select id="selectByTradeNo" resultType="Goods">
+        select * from goods
+        where trade_no = #{tradeNo}
+    </select>
+
     <delete id="updateGoods">
         update goods
         set status = #{status}
