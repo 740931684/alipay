@@ -133,6 +133,11 @@ public class AlipayController {
         return "return_url";
     }
 
+    @RequestMapping("notify_url")
+    public String notifyUrl(){
+        return "notify_url";
+    }
+
 
     @RequestMapping("trade_query")
     @ResponseBody
