@@ -167,7 +167,7 @@
 </head>
 <body text=#000000 bgColor="#ffffff" leftMargin=0 topMargin=4>
 <div style="width: 100%;height: auto">
-    <form action="/refundApply" method="get">
+    <form action="refundApply" method="get">
         <input type="submit" value="退款申请">
     </form>
 </div>
