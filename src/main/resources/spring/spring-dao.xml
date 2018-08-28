@@ -11,17 +11,22 @@
     <context:property-placeholder location="classpath:alipaydb.properties" />
 
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-        <property name="driverClass" value="${driver}" />
-        <property name="jdbcUrl" value="${url}" />
-        <property name="user" value="${user}" />
-        <property name="password" value="${password}" />
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver" />
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/alipaydb?serverTimezone=Asia/Shanghai&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false
+" />
+        <property name="user" value="root" />
+        <property name="password" value="123456" />
 
 
         <property name="autoCommitOnClose" value="false"/>
         <property name="acquireRetryAttempts" value="5"/>
-        <property name="checkoutTimeout" value="2000"/>
+        <property name="checkoutTimeout" value="10000"/>
         <property name="maxPoolSize" value="50"/>
         <property name="minPoolSize" value="3"/>
+
+
+        <property name="testConnectionOnCheckin" value="false"/>
+        <property name="testConnectionOnCheckout" value="true"/>
     </bean>
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">

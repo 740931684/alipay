@@ -6,30 +6,30 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
-import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.config.AlipayConfig;
 import com.alipay.dao.GoodsDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import com.alipay.dao.TradeRefundDao;
 import com.alipay.entity.Goods;
 import com.alipay.entity.TradeRefund;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static com.alipay.config.AlipayConfig.log_path;
 
 @RequestMapping("/")
 @Controller
@@ -39,9 +39,10 @@ public class AlipayController {
     @Autowired
     TradeRefundDao refundDao;
 
-
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @RequestMapping(value = {"/","index"})
     public String showIndex(){
+        logger.info("test");
         return "index";
     }
 
@@ -80,14 +81,18 @@ public class AlipayController {
         //请求参数可查阅【电脑网站支付的API文档-alipay.trade.page.pay-请求参数】章节
 
         //请求
-        String result = alipayClient.pageExecute(alipayRequest).getBody();
+        String result = alipayClient.pageExecute(alipayRequest).getBody();//调用sdk生成表单
+
 
         //输出，注意输出格式，错误容易验签失败
         response.setContentType("text/html; charset=utf-8");
         PrintWriter out = response.getWriter();
         out.println(result);
+
+
         return null;
     }
+
 
     @RequestMapping("return_url")
     public String paySuccess(HttpServletRequest request,HttpServletResponse response) throws IOException, AlipayApiException {
@@ -133,6 +138,12 @@ public class AlipayController {
         return "return_url";
     }
 
+    @RequestMapping("notify_url")
+    public String notifyUrl() {
+        return "notify_url";
+    }
+
+
     @RequestMapping("trade_query")
     @ResponseBody
     public String tradeQuery(HttpServletRequest request,HttpServletResponse response) throws IOException, AlipayApiException {
@@ -147,48 +158,47 @@ public class AlipayController {
         String trade_no = new String(request.getParameter("WIDTQtrade_no").getBytes("ISO-8859-1"), "UTF-8");
         //请二选一设置
 
-        Goods goods = goodsDao.selectInfo(out_trade_no);
+        Goods goods = new Goods();
+
+        if (!out_trade_no.isEmpty()) {
+            goods = goodsDao.selectInfo(out_trade_no);
+        }else if (!trade_no.isEmpty()){
+            goods = goodsDao.selectByTradeNo(trade_no);
+        }else {
+            goods = null;
+        }
+
+
         response.setContentType("text/html;charset=UTF-8");
         if (goods == null) {
-            response.getWriter().write("没有该订单号,请确认输入的订单号是否正确");
-        } else if (!goods.getTradeNo().equals(trade_no)) {
-            response.getWriter().write("没有该交易号,请确认输入的交易号是否正确");
+            response.getWriter().write("数据不存在，请检查订单号或者交易号");
         }else if (goods.getStatus()==null||goods.getStatus().equals("交易成功")){
             if (goods.getStatus()==null)goodsDao.updateGoods(out_trade_no,"交易成功");
             response.getWriter().write("交易成功<br>" +
-                    "订单号："+out_trade_no+"<br>"+
-                    "交易号："+trade_no);
+                    "订单号："+goods.getOutTradeNo()+"<br>"+
+                    "交易号："+goods.getTradeNo());
         }else if (goods.getStatus().equals("退款申请中")){
             response.getWriter().write("退款申请中<br>" +
-                    "订单号："+out_trade_no+"<br>"+
-                    "交易号："+trade_no);
+                    "订单号："+goods.getOutTradeNo()+"<br>"+
+                    "交易号："+goods.getTradeNo());
         } else if (goods.getStatus().equals("已退款")){
             response.getWriter().write("已退款<br>" +
-                    "订单号："+out_trade_no+"<br>"+
-                    "交易号："+trade_no);
+                    "订单号："+goods.getOutTradeNo()+"<br>"+
+                    "交易号："+goods.getTradeNo());
         }else if (goods.getStatus().equals("交易关闭")){
             response.getWriter().write("交易关闭<br>" +
-                    "订单号："+out_trade_no+"<br>"+
-                    "交易号："+trade_no);
+                    "订单号："+goods.getOutTradeNo()+"<br>"+
+                    "交易号："+goods.getTradeNo());
         }else {
             response.getWriter().write("系统异常");
         }
 
-
-        //alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","+"\"trade_no\":\""+ trade_no +"\"}");
-
-        //请求
-       // String result = alipayClient.execute(alipayRequest).getBody();
-
-        //输出
-        //response.setContentType("text/html;charset=utf-8");
-       // response.getWriter().println(result);
         return null;
     }
 
     @RequestMapping("trade_refund")
     @ResponseBody
-    public String tradeRefund(HttpServletRequest request,HttpServletResponse response) throws IOException, AlipayApiException {
+    public String tradeRefund(HttpServletRequest request,HttpServletResponse response) throws IOException{
         //设置请求参数
        // AlipayTradeRefundRequest alipayRequest = new AlipayTradeRefundRequest();
 
@@ -209,15 +219,6 @@ public class AlipayController {
             goodsDao.updateGoods(out_trade_no,"退款申请中");
         }
 
-       /* alipayRequest.setBizContent("{\"out_trade_no\":\""+ out_trade_no +"\","
-                + "\"trade_no\":\""+ trade_no +"\","
-                + "\"refund_amount\":\""+ refund_amount +"\","
-                + "\"refund_reason\":\""+ refund_reason +"\","
-                + "\"out_request_no\":\""+ out_request_no +"\"}");
-
-        //请求
-        String result = alipayClient.execute(alipayRequest).getBody();
-*/
         //输出
         response.setContentType("text/html;charset=utf-8");
         response.getWriter().println("退款申请中，请等待。。。。。。");
@@ -268,4 +269,40 @@ public class AlipayController {
         response.getWriter().write("取消退款申请成功");
     }
 
+
+    @RequestMapping(value = {"trade.refund.query"})
+    public String tradeRefundQuery(HttpServletRequest request,Model model) throws IOException {
+
+        String out_trade_no = new String(request.getParameter("WIDRQout_trade_no").getBytes("ISO-8859-1"),"UTF-8");
+        //支付宝交易号
+        String trade_no = new String(request.getParameter("WIDRQtrade_no").getBytes("ISO-8859-1"),"UTF-8");
+
+        //标识一次退款请求，同一笔交易多次退款需要保证唯一，如需部分退款，则此参数必传
+        String out_request_no = new String(request.getParameter("WIDRQout_request_no").getBytes("ISO-8859-1"),"UTF-8");
+
+        Goods goods = new Goods();
+
+        if (!out_trade_no.isEmpty()) {
+            goods = goodsDao.selectInfo(out_trade_no);
+        }else if (!trade_no.isEmpty()){
+            goods = goodsDao.selectByTradeNo(trade_no);
+        }else {
+            goods = null;
+        }
+
+
+        if (goods!=null && goods.getStatus().equals("已退款")){
+            model.addAttribute("goods",goods);
+        }else {
+            model.addAttribute("goods",new Goods());
+        }
+
+        return "trade.refund.query";
+    }
+
+
+    @RequestMapping("alipay.trade.close")
+    public String tradeClose(){
+        return "alipay.trade.close";
+    }
 }

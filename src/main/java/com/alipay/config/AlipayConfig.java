@@ -26,11 +26,10 @@ public class AlipayConfig {
 	// 支付宝公钥,查看地址：https://openhome.alipay.com/platform/keyManage.htm 对应APPID下的支付宝公钥。
     public static String alipay_public_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArDUp4KK4INQRKYd3HT4dFDO/s8qXmcCiWoiQvRNdqljfDIjNo3cAfn6xTg1hl7kC1VxV7YO9u4TR54R9sMrETgH5yhW8wnK764ATx7ojNhUzTuOzVSTB+jcBlOBCf++Q0TLyUUDKzQi71ASf39v9u/eoiTKePbw3AAAFLB2NI2rrjGjki3gjWoV8uftTpxQ1vynigfAxI32HfXHZAz+3NBzO1+Iz4+2Lgobm5WOGm6LU+7YU0Am9lI1eTP5NJTBKS756pho3G1zNngVpS00CufnbBMQpvxvSc3GxLAw0e0HsAxU4mz7GvMePojJnKHFjANoI2WKxUoywBwa4onoOIQIDAQAB";
 
-	// 服务器异步通知页面路径  需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-	public static String notify_url = "http://193.112.64.192/alipay/notify_url.jsp";
+	public static String notify_url = "http://193.112.64.192/alipay/notify_url";
 
 	// 页面跳转同步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-	public static String return_url = "http://localhost:8080/return_url";
+	public static String return_url = "http://193.112.64.192/alipay/return_url";
 
 	// 签名方式
 	public static String sign_type = "RSA2";
@@ -42,7 +41,7 @@ public class AlipayConfig {
 	public static String gatewayUrl = "https://openapi.alipaydev.com/gateway.do";
 	
 	// 支付宝网关
-	public static String log_path = "D:\\logger";
+	public static String log_path = "/usr/local/";
 
 
 //↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑

@@ -9,17 +9,19 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.*;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:spring/spring-*.xml")
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration("classpath:spring/spring-*.xml")
 public class GoodsDaoTest {
 
-    @Autowired
-    GoodsDao goodsDao;
+   // @Autowired
+    //GoodsDao goodsDao;
 
 
     @Test
-    public void testGoods(){
-      //  goodsDao.insertIntoGoods("1341654654","100","苹果","");
-    }
+    public void testGoods() {
+        //  goodsDao.insertIntoGoods("1341654654","100","苹果","");
+        char[] c = {'a','b','c','d','e'};
+        System.out.println(String.valueOf(c,0,4));
 
+    }
 }

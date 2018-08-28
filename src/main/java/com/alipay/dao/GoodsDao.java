@@ -1,5 +1,6 @@
 package com.alipay.dao;
 
+
 import com.alipay.entity.Goods;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,6 +12,8 @@ public interface GoodsDao {
 
 
     Goods selectInfo(@Param("outTradeNo") String outTradeNo);
+
+    Goods selectByTradeNo(@Param("tradeNo")String tradeNo);
 
     int updateGoods(@Param("outTradeNo")String outTradeNo,
                     @Param("status")String status);
