@@ -3,24 +3,22 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.alipay.dao.GoodsDao">
     <insert id="insertIntoGoods">
-        insert into goods(out_trade_no,total_amount,trade_no,body) values
-        (#{outTradeNo},#{totalAmount},#{tradeNo},#{body})
+        insert into goods(out_trade_no,total_amount,trade_no,status) values
+        (#{outTradeNo},#{totalAmount},#{tradeNo},#{status})
     </insert>
 
     <select id="selectInfo" resultType="Goods">
         select * from goods
         where out_trade_no = #{outTradeNo}
+        or trade_no = #{tradeNo}
     </select>
 
 
-    <select id="selectByTradeNo" resultType="Goods">
-        select * from goods
-        where trade_no = #{tradeNo}
-    </select>
-
-    <delete id="updateGoods">
+    <update id="updateGoods">
         update goods
         set status = #{status}
         where out_trade_no = #{outTradeNo}
-    </delete>
+        or trade_no = #{tradeNo}
+    </update>
+
 </mapper>

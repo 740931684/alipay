@@ -12,10 +12,10 @@ public interface TradeRefundDao {
                   @Param("refundReason")String refundReason,
                   @Param("outRequestNo")String outRequestNo);
 
-    int deleteRefund(@Param("outTradeNo")String outTradeNo);
+    int deleteRefund(@Param("outTradeNo")String outTradeNo,
+                     @Param("tradeNo")String tradeNo);
 
 
     List<TradeRefund> getRefundInfo();
 
-    TradeRefund getRefundByOutTradeNo(@Param("outTradeNo")String outTradeNo);
 }

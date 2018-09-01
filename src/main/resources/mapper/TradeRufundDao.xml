@@ -12,7 +12,9 @@
     <delete id="deleteRefund">
         delete from trade_refund
         where out_trade_no = #{outTradeNo}
+        or trade_no = #{tradeNo}
     </delete>
+
 
     <select id="getRefundInfo" resultType="TradeRefund">
         select * from trade_refund
@@ -22,4 +24,5 @@
         select * from trade_refund
         where out_trade_no = #{outTradeNo}
     </select>
+
 </mapper>

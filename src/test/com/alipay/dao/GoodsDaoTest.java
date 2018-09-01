@@ -13,15 +13,11 @@ import static org.junit.Assert.*;
 //@ContextConfiguration("classpath:spring/spring-*.xml")
 public class GoodsDaoTest {
 
-   // @Autowired
-    //GoodsDao goodsDao;
-
-
     @Test
     public void testGoods() {
-        //  goodsDao.insertIntoGoods("1341654654","100","苹果","");
-        char[] c = {'a','b','c','d','e'};
-        System.out.println(String.valueOf(c,0,4));
+        String str = "1.11";
+        String s = "0.50";
+        System.out.println(Double.parseDouble(str));
 
     }
 }
